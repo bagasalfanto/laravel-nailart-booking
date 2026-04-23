@@ -1,0 +1,8 @@
+<?php
+
+namespace {{ namespace }};
+
+class {{ class }}
+{
+    // Add your business logic methods here.
+}
