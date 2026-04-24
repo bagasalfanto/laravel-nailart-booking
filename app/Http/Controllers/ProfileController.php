@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -27,14 +28,36 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $user = $request->user();
 
-        // Handle avatar upload
-        if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $validated['avatar'] = $avatarPath;
+        $userPayload = [
+            'full_name' => $validated['full_name'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'phone_number' => $validated['phone_number'] ?? null,
+        ];
+
+        if ($request->boolean('remove_avatar') && $user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+            $userPayload['avatar'] = null;
         }
 
-        $request->user()->fill($validated)->save();
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $userPayload['avatar'] = $avatarPath;
+        }
+
+        $user->fill($userPayload)->save();
+
+        if ($user->nailist) {
+            $user->nailist()->update([
+                'specialty' => $validated['specialty'] ?? null,
+            ]);
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

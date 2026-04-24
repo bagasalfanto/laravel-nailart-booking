@@ -23,10 +23,9 @@ class RegisterRequest extends FormRequest
     {
         return [
             'full_name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'phone_number' => ['nullable', 'string', 'max:20', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', Rules\Password::defaults()],
         ];
     }
 
@@ -37,14 +36,11 @@ class RegisterRequest extends FormRequest
     {
         return [
             'full_name.required' => 'Nama lengkap harus diisi',
-            'username.required' => 'Username harus diisi',
-            'username.unique' => 'Username sudah digunakan',
             'email.required' => 'Email harus diisi',
             'email.unique' => 'Email sudah terdaftar',
             'email.email' => 'Email tidak valid',
             'phone_number.unique' => 'Nomor telepon sudah terdaftar',
             'password.required' => 'Password harus diisi',
-            'password.confirmed' => 'Konfirmasi password tidak sesuai',
         ];
     }
 }
