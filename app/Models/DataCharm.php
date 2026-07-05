@@ -20,6 +20,7 @@ class DataCharm extends Model
         'nama_charm',
         'stok',
         'harga',
+        'is_active',
     ];
 
     /**
@@ -34,6 +35,7 @@ class DataCharm extends Model
             'nama_charm' => 'string',
             'stok' => 'integer',
             'harga' => 'decimal:2',
+            'is_active'  => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

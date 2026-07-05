@@ -8,5 +8,17 @@
         </div>
 
         @include('profile.partials.update-profile-information-form')
+
+        @role('admin|superadmin')
+            <div class="mt-8">
+                @include('profile.partials.recovery-email')
+            </div>
+        @endrole
+
+        @role('customer')
+            <div class="mt-8">
+                @include('profile.partials.delete-user-form')
+            </div>
+        @endrole
     </div>
 </x-app-layout>

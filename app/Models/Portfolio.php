@@ -18,9 +18,14 @@ class Portfolio extends Model
      */
     protected $fillable = [
         'nailist_id',
+        'judul',
         'gambar_url',
         'deskripsi',
+        'is_featured',
+        'featured_at',
     ];
+
+    protected $appends = ['gambar_full_url'];
 
     /**
      * Get the attributes that should be cast.
@@ -32,8 +37,11 @@ class Portfolio extends Model
         return [
             'id' => 'string',
             'nailist_id' => 'string',
+            'judul' => 'string',
             'gambar_url' => 'string',
             'deskripsi' => 'string',
+            'is_featured' => 'boolean',
+            'featured_at' => 'datetime',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -54,5 +62,33 @@ class Portfolio extends Model
     public function nailist()
     {
         return $this->belongsTo(Nailist::class, 'nailist_id', 'id');
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
+    /**
+     * URL gambar siap pakai di <img src>:
+     * - URL absolut → langsung
+     * - Path absolut /storage/... → langsung
+     * - Path relatif → prefix asset('storage/')
+     */
+    public function getGambarFullUrlAttribute(): string
+    {
+        $g = (string) $this->gambar_url;
+
+        if ($g === '') return '';
+
+        if (str_starts_with($g, 'http://') || str_starts_with($g, 'https://')) {
+            return $g;
+        }
+
+        if (str_starts_with($g, '/storage/') || str_starts_with($g, '/')) {
+            return url($g);
+        }
+
+        return asset('storage/'.$g);
     }
 }

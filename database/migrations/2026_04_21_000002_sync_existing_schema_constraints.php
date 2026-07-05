@@ -54,13 +54,9 @@ return new class extends Migration
             return;
         }
 
-        $dataType = DB::table('information_schema.columns')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', 'sessions')
-            ->where('column_name', 'user_id')
-            ->value('data_type');
+        $dataType = strtolower((string) Schema::getColumnType('sessions', 'user_id'));
 
-        if (!in_array(strtolower((string) $dataType), ['char', 'varchar'], true)) {
+        if (!in_array($dataType, ['char', 'varchar', 'string'], true)) {
             Schema::drop('sessions');
             $this->createSessionsTable();
         }
@@ -292,10 +288,12 @@ return new class extends Migration
 
     private function indexExists(string $tableName, string $indexName): bool
     {
-        return DB::table('information_schema.statistics')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', $tableName)
-            ->where('index_name', $indexName)
-            ->exists();
+        foreach (Schema::getIndexes($tableName) as $index) {
+            if (($index['name'] ?? null) === $indexName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };

@@ -1,57 +1,113 @@
-<section class="space-y-6">
+<section class="space-y-6 rounded-2xl border border-rose-100 bg-rose-50/40 p-6">
     <header>
-        <h2 class="text-xl font-semibold text-slate-900">
-            {{ __('Delete Account') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-slate-500">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
+        <h2 class="text-xl font-semibold text-rose-700">Hapus Akun</h2>
+        <p class="mt-1 text-sm text-slate-600">
+            Akun kamu akan dihapus dari sistem. Untuk menjaga integritas data,
+            <strong>riwayat booking & review tetap tersimpan</strong> dengan nama asli kamu.
+            Email kamu akan di-release sehingga bisa dipakai untuk daftar akun baru. Aksi ini tidak bisa dibatalkan.
         </p>
     </header>
 
+    {{-- Form tersembunyi yang di-submit oleh JS setelah konfirmasi SweetAlert2. --}}
+    <form id="deleteAccountForm" method="POST" action="{{ route('profile.destroy') }}" class="hidden">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="password" id="deleteAccountPassword">
+    </form>
+
     <button
         type="button"
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-        class="inline-flex items-center justify-center rounded-full bg-rose-50 px-5 py-2 text-sm font-semibold text-rose-600 border border-rose-200 hover:bg-rose-100 transition"
-    >{{ __('Delete Account') }}</button>
+        id="deleteAccountTrigger"
+        class="inline-flex items-center justify-center rounded-full bg-rose-600 px-5 py-2 text-sm font-semibold text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2 transition"
+    >
+        <p class="text-slate-600 text-white">Hapus Akun Saya</p>
+    </button>
 
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-6 bg-white rounded-2xl">
-            @csrf
-            @method('delete')
+    {{-- Tampilkan error password (kalau redirect-back dari controller dengan error). --}}
+    @if ($errors->userDeletion->any())
+        <p class="text-sm text-rose-600">{{ $errors->userDeletion->first() }}</p>
+    @endif
 
-            <h2 class="text-lg font-semibold text-slate-900">
-                {{ __('Are you sure you want to delete your account?') }}
-            </h2>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const trigger = document.getElementById('deleteAccountTrigger');
+            const form    = document.getElementById('deleteAccountForm');
+            const pwdInput= document.getElementById('deleteAccountPassword');
+            const isGoogle = @json(!empty($user->google_id));
 
-            <p class="mt-1 text-sm text-slate-500">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-            </p>
+            if (!trigger || !form || !pwdInput) return;
 
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+            trigger.addEventListener('click', async () => {
+                if (typeof Swal === 'undefined') {
+                    alert('SweetAlert2 belum dimuat — refresh halaman dan coba lagi.');
+                    return;
+                }
 
-                <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-full rounded-xl border border-[#eadce0] bg-[#fbf5f7] px-4 py-2.5 text-slate-800 focus:border-[#d98aa9] focus:ring-[#d98aa9]"
-                    placeholder="{{ __('Password') }}"
-                />
+                // Google OAuth users — no password, just confirmation
+                if (isGoogle) {
+                    const result = await Swal.fire({
+                        title: 'Hapus akun kamu?',
+                        html: `
+                            <p style="text-align:left; color:#475569; font-size:0.875rem; line-height:1.5;">
+                                Akun Google kamu akan dihapus permanen. Riwayat booking & review masih tersimpan, tapi kamu tidak bisa login lagi.
+                            </p>
+                        `,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, hapus akun saya',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: '#e11d48',
+                        cancelButtonColor: '#94a3b8',
+                        reverseButtons: true,
+                        focusCancel: true,
+                    });
 
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
-            </div>
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                    return;
+                }
 
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
+                // Regular users — require password
+                const { value: password, isConfirmed } = await Swal.fire({
+                    title: 'Hapus akun kamu?',
+                    html: `
+                        <p style="text-align:left; color:#475569; font-size:0.875rem; line-height:1.5; margin-bottom:0.75rem;">
+                            Akun ini akan dihapus permanen. Riwayat booking & review masih tersimpan, tapi kamu tidak bisa login lagi.
+                        </p>
+                        <p style="text-align:left; color:#475569; font-size:0.875rem; margin-bottom:0.5rem;">
+                            Masukkan password kamu untuk konfirmasi:
+                        </p>
+                    `,
+                    icon: 'warning',
+                    input: 'password',
+                    inputPlaceholder: 'Password kamu',
+                    inputAttributes: {
+                        autocapitalize: 'off',
+                        autocomplete: 'current-password',
+                        maxlength: '72',
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, hapus akun saya',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#e11d48',
+                    cancelButtonColor: '#94a3b8',
+                    reverseButtons: true,
+                    focusCancel: true,
+                    preConfirm: (value) => {
+                        if (!value) {
+                            Swal.showValidationMessage('Password wajib diisi.');
+                            return false;
+                        }
+                        return value;
+                    },
+                });
 
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
-                </x-danger-button>
-            </div>
-        </form>
-    </x-modal>
+                if (isConfirmed && password) {
+                    pwdInput.value = password;
+                    form.submit();
+                }
+            });
+        });
+    </script>
 </section>

@@ -13,7 +13,7 @@ class SidebarMenuSeeder extends Seeder
      */
     public function run(): void
     {
-        $requiredRoles = ['admin', 'nailist', 'customers'];
+        $requiredRoles = ['admin', 'nailist', 'customer'];
         $rolesByName = Role::query()
             ->whereIn('name', $requiredRoles)
             ->pluck('id', 'name');
@@ -35,7 +35,7 @@ class SidebarMenuSeeder extends Seeder
             'parent_id' => null,
         ], [
             'icon' => 'layout-dashboard',
-            'route_name' => 'dashboard.index',
+            'route_name' => 'dashboard.home',
             'permission_name' => null,
             'sort_order' => 10,
             'is_active' => true,
@@ -46,7 +46,7 @@ class SidebarMenuSeeder extends Seeder
             'parent_id' => null,
         ], [
             'icon' => 'calendar-days',
-            'route_name' => 'reservasi.index',
+            'route_name' => 'dashboard.nailist-bookings.index',
             'permission_name' => 'reservasi.view',
             'sort_order' => 20,
             'is_active' => true,
@@ -68,7 +68,7 @@ class SidebarMenuSeeder extends Seeder
             'parent_id' => null,
         ], [
             'icon' => 'credit-card',
-            'route_name' => 'pembayaran.index',
+            'route_name' => 'dashboard.payment-monitoring.index',
             'permission_name' => 'pembayaran.view',
             'sort_order' => 40,
             'is_active' => true,
@@ -83,13 +83,19 @@ class SidebarMenuSeeder extends Seeder
             'is_active' => true,
         ]);
 
+        // Hapus entri lama dengan title "Users" supaya tidak duplikat dengan "User Management".
+        SidebarMenu::query()
+            ->where('parent_id', $masterData->id)
+            ->where('title', 'Users')
+            ->delete();
+
         $users = SidebarMenu::updateOrCreate([
             'parent_id' => $masterData->id,
-            'title' => 'Users',
+            'title' => 'User Management',
         ], [
             'icon' => 'users',
             'route_name' => 'users.index',
-            'permission_name' => 'users.view',
+            'permission_name' => 'user.view',
             'sort_order' => 10,
             'is_active' => true,
         ]);
@@ -99,7 +105,7 @@ class SidebarMenuSeeder extends Seeder
             'title' => 'Treatment',
         ], [
             'icon' => 'sparkles',
-            'route_name' => 'treatment.index',
+            'route_name' => 'dashboard.treatments.index',
             'permission_name' => 'treatment.view',
             'sort_order' => 20,
             'is_active' => true,
@@ -110,7 +116,7 @@ class SidebarMenuSeeder extends Seeder
             'title' => 'Data Charm',
         ], [
             'icon' => 'gem',
-            'route_name' => 'data-charm.index',
+            'route_name' => 'dashboard.charm-management.index',
             'permission_name' => 'datacharm.view',
             'sort_order' => 30,
             'is_active' => true,
@@ -121,7 +127,7 @@ class SidebarMenuSeeder extends Seeder
             'parent_id' => null,
         ], [
             'icon' => 'circle-help',
-            'route_name' => 'faq.index',
+            'route_name' => null,
             'permission_name' => null,
             'sort_order' => 55,
             'is_active' => true,
@@ -132,7 +138,7 @@ class SidebarMenuSeeder extends Seeder
             'parent_id' => null,
         ], [
             'icon' => 'settings',
-            'route_name' => 'web-setting.index',
+            'route_name' => 'dashboard.web-settings.index',
             'permission_name' => 'websetting.view',
             'sort_order' => 60,
             'is_active' => true,
@@ -141,14 +147,15 @@ class SidebarMenuSeeder extends Seeder
         $allRoles = $rolesByName->values()->all();
         $adminOnly = [$rolesByName['admin']];
         $adminAndNailist = [$rolesByName['admin'], $rolesByName['nailist']];
-        $adminAndCustomer = [$rolesByName['admin'], $rolesByName['customers']];
+        $adminAndCustomer = [$rolesByName['admin'], $rolesByName['customer']];
+        $adminAndSuperadmin = array_filter([$rolesByName['admin'] ?? null, $rolesByName['superadmin'] ?? null]);
 
         $dashboard->roles()->sync($allRoles);
         $reservasi->roles()->sync($allRoles);
         $portfolio->roles()->sync($adminAndNailist);
         $pembayaran->roles()->sync($adminAndCustomer);
-        $masterData->roles()->sync($adminOnly);
-        $users->roles()->sync($adminOnly);
+        $masterData->roles()->sync($adminAndSuperadmin);
+        $users->roles()->sync($adminAndSuperadmin);
         $treatments->roles()->sync($adminOnly);
         $dataCharms->roles()->sync($adminOnly);
         $faq->roles()->sync($allRoles);

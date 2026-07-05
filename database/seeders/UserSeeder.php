@@ -14,6 +14,15 @@ class UserSeeder extends Seeder
     {
         $seedUsers = [
             [
+                'role' => 'superadmin',
+                'full_name' => 'Super Admin',
+                'username' => 'superadmin',
+                'email' => 'superadmin@nailart.com',
+                'phone_number' => '081200000000',
+                'google_id' => null,
+                'kode_admin' => 'SADM-001',
+            ],
+            [
                 'role' => 'admin',
                 'full_name' => 'Bagas Suryanto',
                 'username' => 'bagas_admin',
@@ -59,7 +68,7 @@ class UserSeeder extends Seeder
                 'specialty' => 'Bridal Glam & Soft Gel',
             ],
             [
-                'role' => 'customers',
+                'role' => 'customer',
                 'full_name' => 'Putri Ayu',
                 'username' => 'putri_customer',
                 'email' => 'putri@gmail.com',
@@ -67,7 +76,7 @@ class UserSeeder extends Seeder
                 'google_id' => 'google_cust_putri_123',
             ],
             [
-                'role' => 'customers',
+                'role' => 'customer',
                 'full_name' => 'Risa Nur',
                 'username' => 'risa_customer',
                 'email' => 'risa@yahoo.com',
@@ -75,7 +84,7 @@ class UserSeeder extends Seeder
                 'google_id' => null,
             ],
             [
-                'role' => 'customers',
+                'role' => 'customer',
                 'full_name' => 'Diana Safitri',
                 'username' => 'diana_customer',
                 'email' => 'diana.safitri@email.com',
@@ -83,7 +92,7 @@ class UserSeeder extends Seeder
                 'google_id' => 'google_cust_diana_789',
             ],
             [
-                'role' => 'customers',
+                'role' => 'customer',
                 'full_name' => 'Nadia Kusuma',
                 'username' => 'nadia_customer',
                 'email' => 'nadia.kusuma@email.com',
@@ -91,7 +100,7 @@ class UserSeeder extends Seeder
                 'google_id' => null,
             ],
             [
-                'role' => 'customers',
+                'role' => 'customer',
                 'full_name' => 'Tasya Putri',
                 'username' => 'tasya_customer',
                 'email' => 'tasya.putri@email.com',
@@ -109,10 +118,12 @@ class UserSeeder extends Seeder
                     'phone_number' => $seedUser['phone_number'],
                     'google_id' => $seedUser['google_id'],
                     'password' => 'password123',
+                    'status' => 'active',
+                    'email_verified_at' => now(),
                 ]
             );
 
-            if ($seedUser['role'] === 'admin') {
+            if (in_array($seedUser['role'], ['admin', 'superadmin'], true)) {
                 $user->admin()->updateOrCreate([], [
                     'kode_admin' => $seedUser['kode_admin'],
                 ]);
@@ -120,15 +131,17 @@ class UserSeeder extends Seeder
 
             if ($seedUser['role'] === 'nailist') {
                 $user->nailist()->updateOrCreate([], [
-                    'specialty' => $seedUser['specialty'],
+                    'title'     => $seedUser['specialty'],
+                    'bio'       => 'Specialist '.$seedUser['specialty'].' dengan pengalaman lebih dari 3 tahun. Setiap karya dibuat dengan ketelitian dan presisi tinggi.',
+                    'instagram' => '@'.str_replace(' ', '_', strtolower(explode(' ', $seedUser['full_name'])[0])).'.nails',
                 ]);
             }
 
-            if ($seedUser['role'] === 'customers') {
+            if ($seedUser['role'] === 'customer') {
                 $user->customer()->firstOrCreate();
             }
         }
 
-        $this->command->info('User seeded successfully (2 Admin, 3 Nailist, 5 Customers).');
+        $this->command->info('User seeded successfully (1 Superadmin, 2 Admin, 3 Nailist, 5 Customers).');
     }
 }

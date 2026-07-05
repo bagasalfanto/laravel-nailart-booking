@@ -24,6 +24,8 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return back()->with('status', 'password-updated');
+        return back()
+            ->with('status', 'password-updated')
+            ->with('toast', ['type' => 'success', 'title' => 'Password Diperbarui', 'message' => 'Password Anda berhasil diganti.']);
     }
 }

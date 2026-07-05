@@ -26,6 +26,9 @@ class Pembayaran extends Model
         'bank',
         'raw_response',
         'nominal',
+        'pelunasan_nominal',
+        'pelunasan_jenis',
+        'pelunasan_waktu',
         'status_pembayaran',
         'batas_waktu_bayar',
         'waktu_pembayaran',
@@ -49,6 +52,9 @@ class Pembayaran extends Model
             'bank' => 'string',
             'raw_response' => 'array',
             'nominal' => 'decimal:2',
+            'pelunasan_nominal' => 'decimal:2',
+            'pelunasan_jenis' => 'string',
+            'pelunasan_waktu' => 'datetime',
             'status_pembayaran' => 'string',
             'batas_waktu_bayar' => 'datetime',
             'waktu_pembayaran' => 'datetime',
@@ -72,5 +78,30 @@ class Pembayaran extends Model
     public function reservasi()
     {
         return $this->belongsTo(Reservasi::class, 'reservasi_id', 'id');
+    }
+
+    /**
+     * Whether the remaining balance has been fully settled — either via
+     * explicit pelunasan at the counter, or because the DP already covers
+     * the full total_harga_final (sisa = 0).
+     */
+    public function getIsLunasAttribute(): bool
+    {
+        if ((float) ($this->pelunasan_nominal ?? 0) > 0) {
+            return true;
+        }
+
+        return $this->sisa_pembayaran <= 0;
+    }
+
+    /**
+     * Remaining balance after DP: total_harga_final - DP nominal.
+     */
+    public function getSisaPembayaranAttribute(): float
+    {
+        $total = (float) ($this->reservasi?->total_harga_final ?? 0);
+        $dp = (float) ($this->nominal ?? 0);
+
+        return max(0, $total - $dp);
     }
 }

@@ -111,4 +111,12 @@ class Reservasi extends Model
     {
         return $this->hasOne(Pembayaran::class, 'reservasi_id', 'id');
     }
+
+    /**
+     * Get the review left by the customer for this reservation.
+     */
+    public function review()
+    {
+        return $this->hasOne(Review::class, 'reservasi_id', 'id');
+    }
 }

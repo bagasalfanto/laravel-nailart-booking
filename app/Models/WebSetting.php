@@ -15,7 +15,11 @@ class WebSetting extends Model
 
     protected $fillable = [
         'key',
+        'group',
+        'label',
         'value',
+        'type',
+        'sort_order',
     ];
 
     protected function casts(): array
@@ -23,13 +27,18 @@ class WebSetting extends Model
         return [
             'id' => 'string',
             'key' => 'string',
+            'group' => 'string',
+            'label' => 'string',
             'value' => 'string',
+            'type' => 'string',
+            'sort_order' => 'integer',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
     }
 
-    public function setCachePrefix(): string {
+    public function setCachePrefix(): string
+    {
         return 'web_setting.cache';
     }
 }

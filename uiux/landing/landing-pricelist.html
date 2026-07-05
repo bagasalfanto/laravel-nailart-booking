@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricelist - nailby.hilda</title>
+    <!-- Tailwind CSS CDN -->
+    <script
+        src="https://cdn.tailwindcss.com"
+        integrity="sha384-igm5BeiBt36UU4gqwWS7imYmelpTsZlQ45FZf+XBn9MuJbn4nQr7yx1yFydocC/K"
+        crossorigin="anonymous"></script>
+    <!-- Google Fonts: Poppins (Sans-serif) & Playfair Display (Serif) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'brand-pink': '#D56B8D',
+                        'brand-bg': '#FFF5F6', /* Latar belakang pink pucat */
+                        'card-bg': '#FFFFFF',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom shape untuk garis bawah menu aktif di navbar */
+        .active-line::after {
+            content: '';
+            display: block;
+            width: 18px;
+            height: 3px;
+            background-color: #D56B8D;
+            border-radius: 99px;
+            margin: 2px auto 0;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg font-sans text-gray-800 min-h-screen py-6 px-4 md:px-8">
+
+    <!-- === NAVBAR dibuat component === -->
+    <nav class="max-w-5xl mx-auto bg-white/70 backdrop-blur-md px-8 py-3 rounded-full flex items-center justify-between shadow-sm border border-white/50 mb-12">
+        <!-- Logo -->
+        <div class="flex-1">
+            <a href="#" class="text-brand-pink text-xl font-semibold tracking-tight">
+                nailby.hilda
+            </a>
+        </div>
+
+        <!-- Menu Tengah -->
+        <ul class="hidden md:flex flex-[2] justify-center items-center gap-8 text-[15px]">
+            <li><a href="#" class="text-gray-600 hover:text-brand-pink transition-colors">Home</a></li>
+            <li class="active-line text-brand-pink font-medium"><a href="#">Pricelist</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-brand-pink transition-colors">Nail Artist</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-brand-pink transition-colors">Schedule</a></li>
+        </ul>
+
+        <!-- navbar Bagian Kanan -->
+        <div class="flex-1 flex items-center justify-end gap-6 text-[15px]">
+            <a href="#" class="text-gray-600 hover:text-brand-pink transition-colors">Login</a>
+            <a href="#" class="bg-[#DF7D9E] text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-[#d46a8d] transition-all shadow-md shadow-pink-200/50">
+                Register
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+    <!-- === HEADER PRICELIST === -->
+    <header class="text-center mb-10">
+        <h1 class="text-4xl md:text-5xl font-serif font-semibold text-gray-900 mb-3 tracking-wide">Pricelist</h1>
+        <p class="text-[#C17A8E] text-[15px]">Explore our nail treatment options.</p>
+    </header>
+
+
+    <!-- === KONTEN PRICELIST CARDS (setiap card dibuat iterasi untuk menampilan kategori, di setiap kategori itu lakukan juga iterasi untuk menampilkan data setiap treatment di kategiri tersebut=== -->
+    <main class="max-w-3xl mx-auto space-y-6 pb-20">
+
+        <!-- Card 1: Nail Service -->
+        <div class="bg-card-bg rounded-3xl p-7 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-brand-pink font-serif text-xl font-semibold uppercase tracking-wider">Nail Service</h2>
+                <div class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </div>
+            </div>
+            <hr class="border-gray-100 mb-5">
+            <ul class="space-y-4 text-[13px] md:text-[14px]">
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Manicure</span>
+                    <span class="font-semibold text-black text-[15px]">50k</span>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Overlay Gel Manicure</span>
+                    <span class="font-semibold text-black text-[15px]">100k</span>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Soft Tip Extensions</span>
+                    <span class="font-semibold text-black text-[15px]">150k</span>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Press On Nails</span>
+                    <div class="text-right flex flex-col">
+                        <span class="text-[10px] text-gray-500 leading-none mb-0.5">Start from</span>
+                        <span class="font-semibold text-black text-[15px] leading-none">140k</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Card 2: Nail Art Per Finger -->
+        <div class="bg-card-bg rounded-3xl p-7 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-brand-pink font-serif text-xl font-semibold uppercase tracking-wider">Nail Art Per Finger</h2>
+                <div class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </div>
+            </div>
+            <hr class="border-gray-100 mb-5">
+            <ul class="space-y-4 text-[13px] md:text-[14px]">
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Airbrush, Aurora, Chrome, Glazed, Cat Eye, Glitter</span>
+                    <span class="font-semibold text-black text-[15px]">1-5k</span>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Hand Drawn Nail Art</span>
+                    <span class="font-semibold text-black text-[15px]">1-20k</span>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">3D Art</span>
+                    <span class="font-semibold text-black text-[15px]">5-10k</span>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Accessories</span>
+                    <span class="font-semibold text-black text-[15px]">1-20k</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Card 3: Extra Per Finger -->
+        <div class="bg-card-bg rounded-3xl p-7 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-brand-pink font-serif text-xl font-semibold uppercase tracking-wider">Extra Per Finger</h2>
+                <div class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </div>
+            </div>
+            <hr class="border-gray-100 mb-5">
+            <ul class="space-y-4 text-[13px] md:text-[14px]">
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Soft Tip Extensions</span>
+                    <span class="font-semibold text-black text-[15px]">12k</span>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Half Tip Extentsions</span>
+                    <span class="font-semibold text-black text-[15px]">15k</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Card 4: Remove -->
+        <div class="bg-card-bg rounded-3xl p-7 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-brand-pink font-serif text-xl font-semibold uppercase tracking-wider">Remove</h2>
+                <div class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </div>
+            </div>
+            <hr class="border-gray-100 mb-5">
+            <ul class="space-y-4 text-[13px] md:text-[14px]">
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Gel Removal</span>
+                    <span class="font-semibold text-black text-[15px]">30k</span>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="uppercase text-gray-700 tracking-wide">Soft Tip Extensions Removal</span>
+                    <span class="font-semibold text-black text-[15px]">50k</span>
+                </li>
+            </ul>
+        </div>
+
+    </main>
+
+</body>
+</html>
