@@ -8,38 +8,42 @@ use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        $userId = $this->user()->id;
+        $isNailist = $this->user()->hasRole('nailist');
+
         return [
             'full_name' => ['required', 'string', 'max:255'],
-            'username' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
-            'phone_number' => [
-                'nullable',
-                'string',
-                'max:20',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
+            'username' => ['required', 'string', 'max:255', Rule::unique(User::class)->ignore($userId)],
+            // Email read-only di profile — tidak boleh diubah dari sini.
+            'phone_number' => ['nullable', 'string', 'max:20', 'regex:/^[0-9]+$/', Rule::unique(User::class)->ignore($userId)],
             'avatar' => ['nullable', 'image', 'max:2048'],
-            'specialty' => ['nullable', 'string', 'max:255'],
             'remove_avatar' => ['nullable', 'boolean'],
+
+            // Nailist-only fields (hanya divalidasi kalau user role nailist).
+            'title' => [$isNailist ? 'nullable' : 'prohibited', 'string', 'max:255'],
+            'bio' => [$isNailist ? 'nullable' : 'prohibited', 'string', 'max:1000'],
+            'specialties' => [$isNailist ? 'array' : 'prohibited', 'max:3'],
+            'specialties.*' => ['string', 'exists:specialties,id'],
+        ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('phone_number')) {
+            $this->merge([
+                'phone_number' => preg_replace('/[^0-9]/', '', (string) $this->input('phone_number')),
+            ]);
+        }
+    }
+
+    public function messages(): array
+    {
+        return [
+            'specialties.max' => 'Maksimal 3 specialty yang bisa dipilih.',
+            'phone_number.regex' => 'Nomor telepon hanya boleh berisi angka.',
+            'phone_number.unique' => 'Nomor telepon sudah terdaftar.',
         ];
     }
 }

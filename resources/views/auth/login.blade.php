@@ -17,7 +17,11 @@
 
                 <div class="space-y-2">
                     <label for="email" class="block text-lg font-medium text-[#221d1f]" style="font-family: 'Cormorant Garamond', serif;">Email</label>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="hello@example.com" class="block w-full rounded-md border border-[#efd1d6] bg-[#fdf7f8] px-4 py-3 text-sm text-[#3a3133] outline-none transition placeholder:text-[#c9bcc0] focus:border-[#e4a9ba] focus:ring-2 focus:ring-[#f0c5d3]/70" />
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                           autocomplete="username" maxlength="255"
+                           pattern="[A-Za-z0-9.\-@]+" title="Hanya huruf, angka, titik, strip, dan @"
+                           placeholder="hello@example.com"
+                           class="block w-full rounded-md border border-[#efd1d6] bg-[#fdf7f8] px-4 py-3 text-sm text-[#3a3133] outline-none transition placeholder:text-[#c9bcc0] focus:border-[#e4a9ba] focus:ring-2 focus:ring-[#f0c5d3]/70" />
                     <x-input-error :messages="$errors->get('email')" />
                 </div>
 
@@ -30,11 +34,33 @@
                         @endif
                     </div>
 
-                    <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="********" class="block w-full rounded-md border border-[#efd1d6] bg-[#fdf7f8] px-4 py-3 text-sm text-[#3a3133] outline-none transition placeholder:text-[#c9bcc0] focus:border-[#e4a9ba] focus:ring-2 focus:ring-[#f0c5d3]/70" />
+                    <input id="password" type="password" name="password" required
+                           autocomplete="current-password" maxlength="72"
+                           placeholder="********"
+                           class="block w-full rounded-md border border-[#efd1d6] bg-[#fdf7f8] px-4 py-3 text-sm text-[#3a3133] outline-none transition placeholder:text-[#c9bcc0] focus:border-[#e4a9ba] focus:ring-2 focus:ring-[#f0c5d3]/70" />
                     <x-input-error :messages="$errors->get('password')" />
                 </div>
 
-                <button type="submit" class="mt-1 flex w-full items-center justify-center rounded-md bg-[#e8a9c2] px-4 py-3.5 text-base font-semibold text-white shadow-[0_10px_24px_rgba(232,169,194,0.35)] transition hover:bg-[#df97b3] focus:outline-none focus:ring-2 focus:ring-[#e8a9c2]/70 focus:ring-offset-2 focus:ring-offset-white">Login</button>
+                <label for="remember" class="flex items-center gap-2 text-sm text-[#3a3133] cursor-pointer select-none">
+                    <input id="remember" name="remember" type="checkbox" value="1"
+                           class="rounded border-[#efd1d6] text-[#e8a9c2] focus:ring-[#f0c5d3]/70">
+                    <span>Remember me</span>
+                </label>
+
+                {{-- Login with Google (di atas tombol Login) --}}
+                <a href="{{ route('auth.google.redirect') }}"
+                   class="flex w-full items-center justify-center gap-3 rounded-md border border-[#efd1d6] bg-white px-4 py-3 text-sm font-medium text-[#3a3133] transition hover:bg-[#fdf7f8] hover:border-[#e4a9ba]">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" width="18" height="18">
+                    Login with Google
+                </a>
+
+                <div class="flex items-center gap-3 text-xs text-[#c9bcc0]">
+                    <span class="flex-1 h-px bg-[#efd1d6]"></span>
+                    <span>or</span>
+                    <span class="flex-1 h-px bg-[#efd1d6]"></span>
+                </div>
+
+                <button type="submit" class="mt-1 flex w-full items-center justify-center rounded-md bg-[#DF7D9E] px-4 py-3.5 text-base font-semibold text-white shadow-[0_10px_24px_rgba(232,169,194,0.35)] transition hover:bg-[#df97b3] focus:outline-none focus:ring-2 focus:ring-[#e8a9c2]/70 focus:ring-offset-2 focus:ring-offset-white">Login</button>
 
                 <p class="text-center text-sm text-[#2d2527]">
                     Don’t have account?

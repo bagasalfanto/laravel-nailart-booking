@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
 
         // 1. Seed Master Data
         $this->call(StatusBookingSeeder::class);
-        $this->call(TreatmentKatalogSeeder::class);
+        $this->call(TreatmentCategorySeeder::class);
         $this->call(DataCharmSeeder::class);
         $this->call(WebSettingSeeder::class);
         $this->call(FaqSeeder::class);
@@ -29,7 +29,9 @@ class DatabaseSeeder extends Seeder
 
         // 2. Seed Users & Profiles
         $this->call(UserSeeder::class);
+        $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
+        $this->call(SpecialtySeeder::class);
         $this->command->newLine();
 
         // 3. Seed Sidebar Menu
@@ -44,6 +46,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ReservasiSeeder::class);
         $this->call(PenggunaanCharmSeeder::class);
         $this->call(PembayaranSeeder::class);
+        $this->call(ReviewSeeder::class);
         $this->command->newLine();
 
         // Re-enable activity logging

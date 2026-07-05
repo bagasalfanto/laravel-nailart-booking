@@ -24,20 +24,11 @@ return new class extends Migration
         $hasSubjectIndex = $this->indexExists('activity_log', 'subject');
         $hasCauserIndex = $this->indexExists('activity_log', 'causer');
 
-        $subjectIdType = DB::table('information_schema.columns')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', 'activity_log')
-            ->where('column_name', 'subject_id')
-            ->value('data_type');
+        $subjectIdType = $hasSubjectId ? strtolower((string) Schema::getColumnType('activity_log', 'subject_id')) : null;
+        $causerIdType = $hasCauserId ? strtolower((string) Schema::getColumnType('activity_log', 'causer_id')) : null;
 
-        $causerIdType = DB::table('information_schema.columns')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', 'activity_log')
-            ->where('column_name', 'causer_id')
-            ->value('data_type');
-
-        $subjectIsUuidCompatible = in_array(strtolower((string) $subjectIdType), ['char', 'varchar'], true);
-        $causerIsUuidCompatible = in_array(strtolower((string) $causerIdType), ['char', 'varchar'], true);
+        $subjectIsUuidCompatible = in_array($subjectIdType, ['char', 'varchar', 'string'], true);
+        $causerIsUuidCompatible = in_array($causerIdType, ['char', 'varchar', 'string'], true);
 
         if ($subjectIsUuidCompatible && $causerIsUuidCompatible) {
             return;
@@ -90,10 +81,12 @@ return new class extends Migration
 
     private function indexExists(string $tableName, string $indexName): bool
     {
-        return DB::table('information_schema.statistics')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', $tableName)
-            ->where('index_name', $indexName)
-            ->exists();
+        foreach (Schema::getIndexes($tableName) as $index) {
+            if (($index['name'] ?? null) === $indexName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };

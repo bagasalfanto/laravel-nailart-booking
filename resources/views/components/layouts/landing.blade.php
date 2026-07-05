@@ -12,6 +12,14 @@
         <link rel="canonical" href="{{ config('app.url') }}">
 
         <title>nailart booking</title>
+
+        {{-- Favicon --}}
+        <link rel="icon" type="image/png" href="{{ asset('images/icons/favicon.png') }}">
+
+        {{-- Vite assets (Tailwind + Alpine.js) --}}
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
     <body>
         <x-landing.navbar />
@@ -20,9 +28,13 @@
             {{ $slot }}
         </div>
 
-        <x-landing.footer />
+        {{-- Cek apakah sedang berada di route 'home' --}}
+        @if(request()->routeIs('home'))
+            <x-landing.footer />
+        @endif
 
         <x-utils.noscript />
 
+        @stack('scripts')
     </body>
 </html>

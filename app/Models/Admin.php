@@ -48,9 +48,11 @@ class Admin extends Model
 
     /**
      * Get the user that owns the admin profile.
+     * `withTrashed()` agar audit log entries dengan causer admin yang sudah
+     * soft-deleted tetap bisa menampilkan nama.
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id')->withTrashed();
     }
 }

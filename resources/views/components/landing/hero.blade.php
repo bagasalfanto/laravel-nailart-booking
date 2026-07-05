@@ -6,6 +6,13 @@
         <div class="d-flex justify-content-center gap-2 flex-wrap">
             <a href="{{ route('schedule') }}" class="btn btn-danger px-4">Book Now</a>
             <a href="{{ route('naillist') }}" class="btn btn-outline-dark px-4">Lihat Desain</a>
+
+            @auth
+                <a href="{{ route('dashboard.home') }}" class="btn btn-dark px-4">Dashboard</a>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-outline-secondary px-4">Login</a>
+                <a href="{{ route('register') }}" class="btn btn-secondary px-4">Register</a>
+            @endauth
         </div>
     </div>
 </section>

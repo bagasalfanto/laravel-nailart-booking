@@ -46,10 +46,12 @@ class Customer extends Model
 
     /**
      * Get the user that owns the customer profile.
+     * `withTrashed()` agar review & booking history tetap bisa resolve nama
+     * meski user-nya sudah soft-deleted.
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id')->withTrashed();
     }
 
     /**
@@ -58,5 +60,13 @@ class Customer extends Model
     public function reservations()
     {
         return $this->hasMany(Reservasi::class, 'customer_id', 'id');
+    }
+
+    /**
+     * Get the reviews written by the customer.
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'customer_id', 'id');
     }
 }
